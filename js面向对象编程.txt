@@ -1,0 +1,88 @@
+js面向对象编程
+
+一、理解构造函数原型机制（prototype）
+prototype是javascript实现与管理继承的一种机制，也是面向对象的设计思想。构造函数的
+原型存储着引用对象的一个指针，该指针指向与一个原型对象，对象内部存储着函数的原始
+属性和方法；我们可以借助prototype属性，可以访问原型内部的属性和方法
+
+当构造函数被实例化后，所有实例对象都可以访问构造函数的原型成员，如果在原型中声明成员，
+所有的实例方法都可以共享它，比如：
+// 构造函数A 它的原型有一个getName方法
+function A(name){
+	this.name = name
+}
+
+A.prototype.getName = function(){
+	return this.name
+}
+// 实例化两次后，两个实例都有原型getName方法
+var instance1 = new A("lucy1")
+var instance2 = new A("lucy2")
+
+console.log(instance1.getName())   //lucy1
+console.log(instance2.getName())   //lucy2
+
+原型具有普通对象结构，可以将任何普通对象设置为原型对象；一般情况下，对象都继承与Object，
+也可以理解Object是所有对象的超类，Object是没有原型的，而构造函数拥有原型，因此实例化的
+对象也是Object的实例，比如：
+
+//实例化对象是构造函数的实例
+console.log(instance1 instanceof A)    // true
+console.log(instance2 instanceof A)    // true
+
+// 实例化对象也是Object的实例
+console.log(instance1 instanceof Objectof Object)   //true
+console.log(instance2 instanceof Objectof Object)   //true
+
+// Object对象是所有对象的超类，因此构造函数也是Object的实例
+console.log(A instanceof Object)    //  true
+
+// 但是实例化对象，不是Function对象的实例，如下
+console.log(instance1 instanceof Function)     // false
+console.log(instance2 instanceof Function)     // false
+
+// 但是Object与Function与关系，如下
+console.log(Function instanceof Object)     //true
+console.log(Object instanceof Function)     //true
+
+	   _proto_                    _proto_
+Function ---------->Object.prototype ---------->null
+
+******Object，Function,Array等等这些都被称为是构造“函数”，他们都是函数，而所有的函数都是构造函数Function
+的实例。从原型链机制的角度来说，那就是说所有的函数都能够通过原型链找到创建他们的Function构造函数的
+构造原型Function.prototype对象，所以
+console.log(Object instanceof Function)     //true
+
+
+
+
+二、javascript中的原型链机制
+A instanceof B   A --- 必须是一个合法的Javascript对象，B --- 必须是一个合法的Javascript函数
+如果函数B在对象A的原型链（prototype chain）中被发现，那么instanceof操作符将返回true,否则返回
+false
+
+
+javaScript中的原型是和函数紧密相连的，因为每个函数默认都会有一个属性叫prototype,每一个通过函数
+和new 操作符生成的对象都具有一个属性叫prototype，这个属性保存了创建它的构造函数的prototype属性的引用,
+这个_proto_对象就是实现原型链的核心对象。Javascript是一门面向对象的编程语言，它的继承特性其实就是通
+过原型链机制来实现的。同时，instanceof运算符也需要原型链的支持
+
+
+
+
+
+
+使用封装类实现继承
+
+封装类实现继承的基本原理：先定义一个封装函数extend,该函数有2个参数，Sub代表子类，Sup代表超类；在函数
+内，先定义一个空函数F，用来实现功能中转，先设置F的原型为超类的原型，然后把空函数的实例传递给子类的原
+型，使用一个空函数的好处是：避免直接实例化超类可能会带来系统性能问题，比如超类的实例很大的话，实例化
+会占用很多内存；
+
+function extend(Sub,Sup){
+
+}
+
+this.txtEle.html(this.getValue().replace(/\n/g, "<br/>"))
+      // 把回车替换为<br/>,g --- 一直到最后一个
+

@@ -1,0 +1,62 @@
+<html>
+
+<head>
+  <title>测试</title>
+  <script>
+    function Foo() {
+      getName = function() {
+        console.log(1)
+      }
+      return this
+    }
+
+    Foo.getName = function() {
+      console.log(2)
+    }
+    Foo.prototype.getName = function() {
+      console.log(3)
+    }
+
+    var getName = function() {
+      console.log(4)
+    }
+
+    function getName() {
+      console.log(5)
+    }
+    // 浏览器执行JS程序的时候，分两步:
+    // 1)预解析 两步:i)把所有的变量、函数、参数提前到当前
+    // 作用域的顶部 ii)逐步解读代码，从左到右，从上到下
+
+    Foo.getName() //结果 2
+    getName() //结果 4。解析时会先读入变量声明以及方法定义， 然后再是对变量的初始化， 所以变量值覆盖了方法名。
+    Foo().getName() // 结果 1.Foo().getName()相当于window.getName()
+    getName() //结果 1
+    new Foo.getName() // 结果 2.
+    new Foo.getName // 结果 2.
+      // new 操作符在执行时，执行了call函数，Foo.getName()
+      // 在new创建对象时，在其内部执行了。  
+
+    // 这个构造函数是Foo.getName函数
+    // new 操作符调用构造函数创建对象的步骤？
+    // 1)创建一个新对象
+    // 2)将构造函数的作用域赋给新对象
+    // 3)执行构造函数中的代码
+    // 4)返回新对象
+    new Foo().getName() // 结果 3.
+      // 这个构造函数的实例是Foo函数。相当于：
+      // var a = new Foo()
+      // a.getName()
+      // Foo()执行返回this,此时this指向new出来的新实例对象，
+      // 实例对象从本身找不到 getName属性，顺着原型链找到
+      // new new Foo().getName()
+    new new Foo().getName() // 结果 3.
+      //以实例的getName()方法为构造函数 new实例，执行构造函数
+
+  </script>
+</head>
+
+<body>
+</body>
+
+</html>
